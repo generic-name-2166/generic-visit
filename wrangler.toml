@@ -4,3 +4,7 @@
   main = "@tanstack/solid-start/server-entry"
   [observability]
   enabled = true
+  [[d1_databases]]
+  binding = "d1_generic_visit"
+  database_name = "d1-generic-visit"
+  database_id = "dbdb45bc-2043-4f18-94dd-b4793104915b"

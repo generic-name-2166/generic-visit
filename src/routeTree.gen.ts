@@ -8,61 +8,61 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from "./routes/__root";
-import { Route as FileRouteImport } from "./routes/file";
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as FileRouteImport } from './routes/file'
 
 const FileRoute = FileRouteImport.update({
-  id: "/file",
-  path: "/file",
+  id: '/file',
+  path: '/file',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 
 export interface FileRoutesByFullPath {
-  "/file": typeof FileRoute;
+  '/file': typeof FileRoute
 }
 export interface FileRoutesByTo {
-  "/file": typeof FileRoute;
+  '/file': typeof FileRoute
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport;
-  "/file": typeof FileRoute;
+  __root__: typeof rootRouteImport
+  '/file': typeof FileRoute
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/file";
-  fileRoutesByTo: FileRoutesByTo;
-  to: "/file";
-  id: "__root__" | "/file";
-  fileRoutesById: FileRoutesById;
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths: '/file'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/file'
+  id: '__root__' | '/file'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  FileRoute: typeof FileRoute;
+  FileRoute: typeof FileRoute
 }
 
-declare module "@tanstack/solid-router" {
+declare module '@tanstack/solid-router' {
   interface FileRoutesByPath {
-    "/file": {
-      id: "/file";
-      path: "/file";
-      fullPath: "/file";
-      preLoaderRoute: typeof FileRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+    '/file': {
+      id: '/file'
+      path: '/file'
+      fullPath: '/file'
+      preLoaderRoute: typeof FileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   FileRoute: FileRoute,
-};
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()
 
-import type { getRouter } from "./router.tsx";
-
-declare module "@tanstack/solid-start" {
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/solid-start'
+declare module '@tanstack/solid-start' {
   interface Register {
-    ssr: true;
-    router: Awaited<ReturnType<typeof getRouter>>;
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
   }
 }
