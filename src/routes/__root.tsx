@@ -1,0 +1,53 @@
+/// <reference types="vite/client" />
+
+import {
+  createRootRoute,
+  HeadContent,
+  Outlet,
+  Scripts,
+} from "@tanstack/solid-router";
+import * as Solid from "solid-js";
+import { HydrationScript } from "solid-js/web";
+
+export const Route = createRootRoute({
+  head: () => ({
+    meta: [
+      {
+        charSet: "utf-8",
+      },
+      {
+        name: "viewport",
+        content: "width=device-width, initial-scale=1",
+      },
+      {
+        title: "TanStack Start Starter",
+      },
+    ],
+  }),
+  component: RootComponent,
+});
+
+function RootComponent(): Solid.JSX.Element {
+  return (
+    <RootDocument>
+      <Outlet />
+    </RootDocument>
+  );
+}
+
+function RootDocument({
+  children,
+}: Readonly<{ children: Solid.JSX.Element }>): Solid.JSX.Element {
+  return (
+    <html lang="en">
+      <head>
+        <HydrationScript />
+      </head>
+      <body>
+        <HeadContent />
+        <Solid.Suspense>{children}</Solid.Suspense>
+        <Scripts />
+      </body>
+    </html>
+  );
+}
