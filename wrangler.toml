@@ -1,7 +1,8 @@
   name = "generic-visit"
   compatibility_date = "2025-11-16"
   compatibility_flags = ["nodejs_compat"]
-  main = "@tanstack/solid-start/server-entry"
+  # https://github.com/TanStack/router/issues/5213
+  main = "./src/server.ts"
   [observability]
   enabled = true
   [[d1_databases]]
