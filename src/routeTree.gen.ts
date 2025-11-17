@@ -10,32 +10,42 @@
 
 import { Route as rootRouteImport } from "./routes/__root";
 import { Route as FileRouteImport } from "./routes/file";
+import { Route as IndexRouteImport } from "./routes/index";
 
 const FileRoute = FileRouteImport.update({
   id: "/file",
   path: "/file",
   getParentRoute: () => rootRouteImport,
 } as any);
+const IndexRoute = IndexRouteImport.update({
+  id: "/",
+  path: "/",
+  getParentRoute: () => rootRouteImport,
+} as any);
 
 export interface FileRoutesByFullPath {
+  "/": typeof IndexRoute;
   "/file": typeof FileRoute;
 }
 export interface FileRoutesByTo {
+  "/": typeof IndexRoute;
   "/file": typeof FileRoute;
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport;
+  "/": typeof IndexRoute;
   "/file": typeof FileRoute;
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/file";
+  fullPaths: "/" | "/file";
   fileRoutesByTo: FileRoutesByTo;
-  to: "/file";
-  id: "__root__" | "/file";
+  to: "/" | "/file";
+  id: "__root__" | "/" | "/file";
   fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute;
   FileRoute: typeof FileRoute;
 }
 
@@ -48,10 +58,18 @@ declare module "@tanstack/solid-router" {
       preLoaderRoute: typeof FileRouteImport;
       parentRoute: typeof rootRouteImport;
     };
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   FileRoute: FileRoute,
 };
 export const routeTree = rootRouteImport
