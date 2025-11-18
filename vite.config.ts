@@ -10,6 +10,7 @@ export default defineConfig({
     tsConfigPaths(),
     tanstackStart({
       prerender: {
+        // prerender not supported on cloudflare https://github.com/TanStack/router/issues/5213#issuecomment-3344231116
         enabled: false,
         autoSubfolderIndex: true,
         autoStaticPathsDiscovery: true,

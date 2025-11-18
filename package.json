@@ -6,6 +6,7 @@
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
+    "preview:wrangler": "wrangler dev",
     "check": "prettier -w . && oxlint -c .oxlintrc.json --fix . && eslint .",
     "deploy": "wrangler deploy",
     "cf-typegen": "wrangler types"

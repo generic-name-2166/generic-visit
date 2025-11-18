@@ -1,36 +1,42 @@
 import { createFileRoute } from "@tanstack/solid-router";
-import { createServerFn } from "@tanstack/solid-start";
-import type { JSX } from "solid-js";
+import { createClientOnlyFn, json, JsonResponse } from "@tanstack/solid-start";
+import { createResource, type JSX } from "solid-js";
 
 import type { CloudflareContext } from "../server.ts";
 
-interface Visit {
-  userAgent?: string;
-  ip?: string;
-  country?: string;
-  city?: string;
-  postalCode?: string;
+interface ClientFingerprint {
+  timezoneOffset: number;
 }
 
-async function insertVisit({
-  context,
-}: {
-  context: CloudflareContext;
-}): Promise<Visit[]> {
-  return Promise.resolve([context]);
-}
+type Visit = CloudflareContext & ClientFingerprint;
 
-const query = createServerFn({
-  method: "GET",
-}).handler(insertVisit);
+const query = createClientOnlyFn(async (): Promise<Visit[]> => {
+  // https://coveryourtracks.eff.org/
+  const body = { timezoneOffset: new Date().getTimezoneOffset() };
+  const resp = await fetch(window.location.href, {
+    method: "POST",
+    body: JSON.stringify(body),
+    headers: { "Content-Type": "application/json" },
+  });
+  return resp.json();
+});
 
 function Index(): JSX.Element {
-  const state = Route.useLoaderData();
+  const [state] = createResource(query);
 
-  return <pre>{state()}</pre>;
+  return <pre>{JSON.stringify(state(), null, 2)}</pre>;
 }
 
 export const Route = createFileRoute("/")({
   component: Index,
-  loader: async () => await query(),
+  // TODO: make this ssr more granular
+  ssr: false,
+  server: {
+    handlers: {
+      POST: async ({ request, context }): Promise<JsonResponse<Visit[]>> => {
+        const body: ClientFingerprint = await request.json();
+        return json([{ ...body, ...context } satisfies Visit]);
+      },
+    },
+  },
 });

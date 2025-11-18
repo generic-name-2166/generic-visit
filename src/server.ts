@@ -20,12 +20,12 @@ export default createServerEntry({
   fetch(request) {
     const userAgent = request.headers.get("user-agent") ?? undefined;
     const ip = request.headers.get("cf-connecting-ip") ?? undefined;
-    const { cf } = request;
-    const country = cf?.country as string | undefined;
-    const city = cf?.city as string | undefined;
-    const postalCode = cf?.postalCode as string | undefined;
+    const country = request.cf?.country as string | undefined;
+    const city = request.cf?.city as string | undefined;
+    const postalCode = request.cf?.postalCode as string | undefined;
+    const context = { userAgent, ip, country, city, postalCode };
     return handler.fetch(request, {
-      context: { userAgent, ip, country, city, postalCode },
+      context,
     });
   },
 });
