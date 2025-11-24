@@ -18,7 +18,8 @@ const query = createClientOnlyFn(async (): Promise<Visit[]> => {
     body: JSON.stringify(body),
     headers: { "Content-Type": "application/json" },
   });
-  return resp.json();
+  const data: Visit[] = await resp.json();
+  return data.map((visit) => ({ ...visit, date: new Date(visit.date) }));
 });
 
 function Index(): JSX.Element {
