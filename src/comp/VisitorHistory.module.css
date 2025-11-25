@@ -1,0 +1,89 @@
+.history-container {
+  flex: 1;
+  min-height: 0;
+}
+
+.history-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.history-title {
+  color: white;
+  margin-bottom: 15px;
+  font-size: 1.2em;
+}
+
+.table-container {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.visits-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.visits-table thead {
+  position: sticky;
+  top: 0;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  z-index: 1;
+}
+
+.visits-table th {
+  color: white;
+  padding: 10px;
+  text-align: left;
+  font-size: 0.9em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.visits-table td {
+  color: rgba(255, 255, 255, 0.9);
+  padding: 12px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.85em;
+}
+
+.visits-table tr:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.ip-cell {
+  font-weight: bold;
+  color: white;
+}
+
+.date-cell {
+  color: rgba(255, 255, 255, 0.8);
+  white-space: nowrap;
+}
+
+.ua-cell {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 768px) {
+  .visits-table th,
+  .visits-table td {
+    padding: 8px 5px;
+    font-size: 0.75em;
+  }
+
+  .ua-cell {
+    max-width: 150px;
+  }
+}

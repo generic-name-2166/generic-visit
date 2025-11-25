@@ -1,20 +1,8 @@
 import { createFileRoute } from "@tanstack/solid-router";
 import { createClientOnlyFn, json, JsonResponse } from "@tanstack/solid-start";
-import { createResource, Suspense, type JSX } from "solid-js";
+import { createResource, type JSX } from "solid-js";
 
-import type { CloudflareContext } from "../server.ts";
-
-interface ClientFingerprint {
-  readonly timezoneOffset: number;
-  readonly timezone: string;
-  readonly width: number;
-  readonly height: number;
-  readonly colorDepth: number;
-  readonly platform: string;
-  readonly hardwareConcurrency: number;
-}
-
-type Visit = CloudflareContext & ClientFingerprint;
+import Main, { type ClientFingerprint, type Visit } from "../comp/Main.tsx";
 
 const query = createClientOnlyFn(async (): Promise<Visit[]> => {
   // https://coveryourtracks.eff.org/
@@ -46,9 +34,10 @@ function Index(): JSX.Element {
   const [state] = createResource(query);
 
   return (
-    <Suspense>
-      <pre>{JSON.stringify(state(), null, 2)}</pre>
-    </Suspense>
+    <>
+      {/* <pre>{JSON.stringify(state(), null, 2)}</pre> */}
+      <Main visits={() => state() ?? []} />
+    </>
   );
 }
 
