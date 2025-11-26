@@ -1,9 +1,5 @@
 import { createFileRoute } from "@tanstack/solid-router";
-import {
-  createIsomorphicFn,
-  json,
-  JsonResponse,
-} from "@tanstack/solid-start";
+import { createIsomorphicFn, json, JsonResponse } from "@tanstack/solid-start";
 import { createResource, type JSX } from "solid-js";
 
 import Main, { type ClientFingerprint, type Visit } from "../comp/Main.tsx";

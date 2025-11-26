@@ -9,7 +9,7 @@ import {
 import * as Solid from "solid-js";
 import { HydrationScript } from "solid-js/web";
 
-import "../general.css";
+import styles from "../general.css?inline";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -25,6 +25,8 @@ export const Route = createRootRoute({
         title: "Generic Visit",
       },
     ],
+    // styles: is bugged somehow setting .innerhtml instead of .innerHtml
+    // styles: [{ children: styles }],
   }),
   component: RootComponent,
 });
@@ -44,6 +46,7 @@ function RootDocument({
     <html lang="en">
       <head>
         <HydrationScript />
+        <style>{styles}</style>
       </head>
       <body>
         <HeadContent />
