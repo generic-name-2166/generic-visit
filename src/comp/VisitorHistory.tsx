@@ -4,7 +4,7 @@ import type { Visit } from "./Main.tsx";
 import styles from "./VisitorHistory.module.css";
 
 interface VisitorHistoryProps {
-  visits: () => Visit[];
+  visits: Visit[];
 }
 
 export default function VisitorHistory({ visits }: VisitorHistoryProps) {
@@ -23,7 +23,7 @@ export default function VisitorHistory({ visits }: VisitorHistoryProps) {
               </tr>
             </thead>
             <tbody>
-              <For each={visits()}>
+              <For each={visits}>
                 {(visit) => (
                   <tr>
                     <td class={styles["ip-cell"]}>{visit.ip}</td>
@@ -31,7 +31,10 @@ export default function VisitorHistory({ visits }: VisitorHistoryProps) {
                     <td class={styles["date-cell"]}>
                       {visit.date.toISOString()}
                     </td>
-                    <td class={styles["ua-cell"]} title={visit.userAgent}>
+                    <td
+                      class={styles["ua-cell"]}
+                      title={visit.userAgent ?? undefined}
+                    >
                       {visit.userAgent}
                     </td>
                   </tr>

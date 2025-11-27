@@ -4,6 +4,7 @@ import type { CloudflareContext } from "../server.ts";
 import VisitorCard from "./VisitorCard.tsx";
 import VisitorHistory from "./VisitorHistory.tsx";
 import styles from "./Main.module.css";
+import { ClientOnly } from "@tanstack/solid-router";
 
 export interface ClientFingerprint {
   readonly timezoneOffset: number;
@@ -28,16 +29,20 @@ export default function Main({
         <h1>Generic Visit</h1>
       </header>
 
+      <pre>{JSON.stringify(visits(), null, 2)}</pre>
+
       <div class={styles["main-content"]}>
         <div class={styles["counter"]}>
           <div class={styles["counter-label"]}>Total Visitors</div>
           <div class={styles["counter-value"]}>{visits().length}</div>
         </div>
 
-        <VisitorCard visitor={() => visits()[0]!} />
+        <ClientOnly>
+          <VisitorCard visitor={visits()[0]!} />
+        </ClientOnly>
       </div>
 
-      <VisitorHistory visits={visits} />
+      <VisitorHistory visits={visits()} />
     </div>
   );
 }

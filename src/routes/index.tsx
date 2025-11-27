@@ -1,9 +1,13 @@
 import { createFileRoute } from "@tanstack/solid-router";
 import { createIsomorphicFn, json, JsonResponse } from "@tanstack/solid-start";
-import { createResource, type JSX } from "solid-js";
+import { createEffect, createResource, type JSX } from "solid-js";
+import { env } from "cloudflare:workers";
 
 import Main, { type ClientFingerprint, type Visit } from "../comp/Main.tsx";
 
+/**
+ * client information is only available on the client duh
+ */
 const query = createIsomorphicFn()
   .client(async (): Promise<Visit[]> => {
     // https://coveryourtracks.eff.org/
@@ -27,32 +31,40 @@ const query = createIsomorphicFn()
       body: JSON.stringify(body),
       headers: { "Content-Type": "application/json" },
     });
+    console.log(resp);
     const data: Visit[] = await resp.json();
+    console.log(data);
     return data.map((visit) => ({ ...visit, date: new Date(visit.date) }));
   })
-  .server((): Visit[] => [
-    {
-      date: new Date(),
-      language: "",
-      timezoneOffset: 0,
-      timezone: "",
-      width: 0,
-      height: 0,
-      colorDepth: 0,
-      platform: "",
-      hardwareConcurrency: 0,
-    } satisfies Visit,
-  ]);
+  .server(
+    (): Promise<Visit[]> =>
+      Promise.resolve([
+        {
+          date: new Date(),
+          ip: null,
+          userAgent: null,
+          country: null,
+          city: null,
+          postalCode: null,
+          language: "en",
+          encoding: null,
+          timezoneOffset: 0,
+          timezone: "",
+          width: 0,
+          height: 0,
+          colorDepth: 0,
+          platform: "",
+          hardwareConcurrency: 0,
+        } satisfies Visit,
+      ]),
+  );
 
 function Index(): JSX.Element {
-  const [state] = createResource(query);
-
-  return (
-    <>
-      {/* <pre>{JSON.stringify(state(), null, 2)}</pre> */}
-      <Main visits={() => state() ?? []} />
-    </>
-  );
+  const [state, { refetch }] = createResource(() => query());
+  // force fetch on client
+  createEffect(refetch);
+  const visits = () => state() ?? [];
+  return <Main visits={visits} />;
 }
 
 export const Route = createFileRoute("/")({
@@ -64,7 +76,57 @@ export const Route = createFileRoute("/")({
     handlers: {
       POST: async ({ request, context }): Promise<JsonResponse<Visit[]>> => {
         const body: ClientFingerprint = await request.json();
-        return json([{ ...body, ...context } satisfies Visit]);
+        const current: Visit = { ...body, ...context };
+
+        const STMT = `
+        INSERT INTO visit (
+          date,
+          ip,
+          user_agent,
+          country,
+          city,
+          postal_code,
+          language,
+          encoding,
+          timezone_offset,
+          timezone,
+          width,
+          height,
+          color_depth,
+          platform,
+          hardware_concurrency
+        ) VALUES (
+          ?, ?, ?, ?, ?,
+          ?, ?, ?, ?, ?,
+          ?, ?, ?, ?, ?
+        )
+        `;
+        try {
+          await env.d1_generic_visit
+            .prepare(STMT)
+            .bind(
+              current.date.valueOf(),
+              current.ip,
+              current.userAgent,
+              current.country,
+              current.city,
+              current.postalCode,
+              current.language,
+              current.encoding,
+              current.timezoneOffset,
+              current.timezone,
+              current.width,
+              current.height,
+              current.colorDepth,
+              current.platform,
+              current.hardwareConcurrency,
+            )
+            .run();
+        } catch (e) {
+          console.error(e);
+        }
+
+        return json([current]);
       },
     },
   },
