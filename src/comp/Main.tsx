@@ -29,8 +29,6 @@ export default function Main({
         <h1>Generic Visit</h1>
       </header>
 
-      <pre>{JSON.stringify(visits(), null, 2)}</pre>
-
       <div class={styles["main-content"]}>
         <div class={styles["counter"]}>
           <div class={styles["counter-label"]}>Total Visitors</div>
@@ -38,6 +36,7 @@ export default function Main({
         </div>
 
         <ClientOnly>
+          {/* there's always at least 1 visit which is the current user */}
           <VisitorCard visitor={visits()[0]!} />
         </ClientOnly>
       </div>
