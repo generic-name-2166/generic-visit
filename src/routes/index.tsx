@@ -4,6 +4,7 @@ import { createEffect, createResource, type JSX } from "solid-js";
 import { env } from "cloudflare:workers";
 
 import Main, { type ClientFingerprint, type Visit } from "../comp/Main.tsx";
+import type { CloudflareContext } from "../server.ts";
 
 /**
  * client information is only available on the client duh
@@ -31,9 +32,7 @@ const query = createIsomorphicFn()
       body: JSON.stringify(body),
       headers: { "Content-Type": "application/json" },
     });
-    console.log(resp);
     const data: Visit[] = await resp.json();
-    console.log(data);
     return data.map((visit) => ({ ...visit, date: new Date(visit.date) }));
   })
   .server(
@@ -67,6 +66,91 @@ function Index(): JSX.Element {
   return <Main visits={visits} />;
 }
 
+async function handlePost({
+  request,
+  context,
+}: {
+  request: Request;
+  context: CloudflareContext;
+}): Promise<JsonResponse<Visit[]>> {
+  const body: ClientFingerprint = await request.json();
+  const current: Visit = { ...body, ...context };
+
+  const INSERT_STMT = `
+    INSERT INTO visit (
+      date,
+      ip,
+      user_agent,
+      country,
+      city,
+      postal_code,
+      language,
+      encoding,
+      timezone_offset,
+      timezone,
+      width,
+      height,
+      color_depth,
+      platform,
+      hardware_concurrency
+    ) VALUES (
+      ?, ?, ?, ?, ?,
+      ?, ?, ?, ?, ?,
+      ?, ?, ?, ?, ?
+    )
+  `;
+  const SELECT_STMT = `
+    SELECT 
+      date,
+      ip,
+      user_agent,
+      country,
+      city,
+      postal_code,
+      language,
+      encoding,
+      timezone_offset,
+      timezone,
+      width,
+      height,
+      color_depth,
+      platform,
+      hardware_concurrency
+    FROM visit
+  `;
+  try {
+    await env.d1_generic_visit
+      .prepare(INSERT_STMT)
+      .bind(
+        current.date.valueOf(),
+        current.ip,
+        current.userAgent,
+        current.country,
+        current.city,
+        current.postalCode,
+        current.language,
+        current.encoding,
+        current.timezoneOffset,
+        current.timezone,
+        current.width,
+        current.height,
+        current.colorDepth,
+        current.platform,
+        current.hardwareConcurrency,
+      )
+      .run();
+    const result = await env.d1_generic_visit
+      .prepare(SELECT_STMT)
+      .run();
+    const visits: Visit[] = result.results as unknown as Visit[];
+    return json(visits);
+  } catch (e) {
+    console.error(e);
+  }
+
+  return json([current]);
+}
+
 export const Route = createFileRoute("/")({
   component: Index,
   // unfortunate FOUC with CSS modules with SSR, no CSS at all without
@@ -74,60 +158,7 @@ export const Route = createFileRoute("/")({
   ssr: true,
   server: {
     handlers: {
-      POST: async ({ request, context }): Promise<JsonResponse<Visit[]>> => {
-        const body: ClientFingerprint = await request.json();
-        const current: Visit = { ...body, ...context };
-
-        const STMT = `
-        INSERT INTO visit (
-          date,
-          ip,
-          user_agent,
-          country,
-          city,
-          postal_code,
-          language,
-          encoding,
-          timezone_offset,
-          timezone,
-          width,
-          height,
-          color_depth,
-          platform,
-          hardware_concurrency
-        ) VALUES (
-          ?, ?, ?, ?, ?,
-          ?, ?, ?, ?, ?,
-          ?, ?, ?, ?, ?
-        )
-        `;
-        try {
-          await env.d1_generic_visit
-            .prepare(STMT)
-            .bind(
-              current.date.valueOf(),
-              current.ip,
-              current.userAgent,
-              current.country,
-              current.city,
-              current.postalCode,
-              current.language,
-              current.encoding,
-              current.timezoneOffset,
-              current.timezone,
-              current.width,
-              current.height,
-              current.colorDepth,
-              current.platform,
-              current.hardwareConcurrency,
-            )
-            .run();
-        } catch (e) {
-          console.error(e);
-        }
-
-        return json([current]);
-      },
+      POST: handlePost,
     },
   },
 });

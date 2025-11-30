@@ -1,4 +1,4 @@
-import type { JSX } from "solid-js";
+import { createEffect, type JSX } from "solid-js";
 
 import type { CloudflareContext } from "../server.ts";
 import VisitorCard from "./VisitorCard.tsx";
@@ -23,6 +23,7 @@ export default function Main({
 }: {
   visits: () => Visit[];
 }): JSX.Element {
+  createEffect(() => console.log("main", visits()));
   return (
     <div class={styles["container"]}>
       <header class={styles["header"]}>
@@ -37,11 +38,11 @@ export default function Main({
 
         <ClientOnly>
           {/* there's always at least 1 visit which is the current user */}
-          <VisitorCard visitor={visits()[0]!} />
+          <VisitorCard visitor={() => visits()[0]!} />
         </ClientOnly>
       </div>
 
-      <VisitorHistory visits={visits()} />
+      <VisitorHistory visits={visits} />
     </div>
   );
 }
