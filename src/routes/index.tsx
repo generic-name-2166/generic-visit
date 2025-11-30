@@ -2,17 +2,19 @@ import { createFileRoute } from "@tanstack/solid-router";
 import type { JSX } from "solid-js";
 import { env } from "cloudflare:workers";
 
+import styles from "./index.module.css";
+
 function Index(): JSX.Element {
   return (
-    <div>
-      <header>
+    <div class={styles["container"]}>
+      <header class={styles["header"]}>
         <h1>Generic Visit</h1>
       </header>
 
-      <main>
+      <main class={styles["main"]}>
         Create A Page
-        <form method="post" action=".">
-          <button type="submit">Create</button>
+        <form method="post" action="." class={styles["form"]}>
+          <button type="submit" class={styles["button"]}>Create</button>
         </form>
       </main>
     </div>

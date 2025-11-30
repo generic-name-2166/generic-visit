@@ -1,0 +1,64 @@
+.container {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  color: white;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+    Cantarell, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.header {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.85);
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  justify-content: center;
+}
+
+.button {
+  background: linear-gradient(135deg, #6b78f9, #ef87a6);
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 16px rgba(203, 71, 138, 0.3);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.button:hover {
+  background: linear-gradient(135deg, #4b56e1, #d3546b);
+  box-shadow: 0 12px 24px rgba(203, 71, 138, 0.5);
+}
+
+.button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.7);
+}
