@@ -8,7 +8,12 @@ body {
   font-family:
     -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
     Cantarell, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-image:
+    linear-gradient(135deg, #4b6cff 0%, #d3668a 100%),
+    radial-gradient(circle at 10% 20%, #764ba2, transparent 50%),
+    radial-gradient(circle at 90% 80%, #3636ff, transparent 50%),
+    radial-gradient(circle at 40% 50%, #667eea, transparent 50%);
+  background-blend-mode: screen;
   background-attachment: fixed;
   min-height: 100vh;
   display: flex;
