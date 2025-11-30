@@ -1,11 +1,15 @@
-import type { Visit } from "./Main.tsx";
+import type { JSX } from "solid-js";
+
+import type { Visit } from "../routes/$pageId/index.tsx";
 import styles from "./VisitorCard.module.css";
 
 interface VisitorCardProps {
   visitor: () => Visit;
 }
 
-export default function VisitorCard({ visitor }: VisitorCardProps) {
+export default function VisitorCard({
+  visitor,
+}: VisitorCardProps): JSX.Element {
   return (
     <section class={styles["card"]}>
       <h2 class={styles["card-title"]}>Your Information</h2>

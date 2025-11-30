@@ -1,13 +1,15 @@
-import { For } from "solid-js";
+import { For, type JSX } from "solid-js";
 
-import type { Visit } from "./Main.tsx";
+import type { Visit } from "../routes/$pageId/index.tsx";
 import styles from "./VisitorHistory.module.css";
 
 interface VisitorHistoryProps {
   visits: () => Visit[];
 }
 
-export default function VisitorHistory({ visits }: VisitorHistoryProps) {
+export default function VisitorHistory({
+  visits,
+}: VisitorHistoryProps): JSX.Element {
   return (
     <div class={styles["history-container"]}>
       <div class={styles["history-card"]}>

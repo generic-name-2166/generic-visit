@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as FileRouteImport } from './routes/file'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PageIdIndexRouteImport } from './routes/$pageId/index'
 
 const FileRoute = FileRouteImport.update({
   id: '/file',
@@ -22,31 +23,40 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PageIdIndexRoute = PageIdIndexRouteImport.update({
+  id: '/$pageId/',
+  path: '/$pageId/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/file': typeof FileRoute
+  '/$pageId': typeof PageIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/file': typeof FileRoute
+  '/$pageId': typeof PageIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/file': typeof FileRoute
+  '/$pageId/': typeof PageIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/file'
+  fullPaths: '/' | '/file' | '/$pageId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/file'
-  id: '__root__' | '/' | '/file'
+  to: '/' | '/file' | '/$pageId'
+  id: '__root__' | '/' | '/file' | '/$pageId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   FileRoute: typeof FileRoute
+  PageIdIndexRoute: typeof PageIdIndexRoute
 }
 
 declare module '@tanstack/solid-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$pageId/': {
+      id: '/$pageId/'
+      path: '/$pageId'
+      fullPath: '/$pageId'
+      preLoaderRoute: typeof PageIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   FileRoute: FileRoute,
+  PageIdIndexRoute: PageIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
